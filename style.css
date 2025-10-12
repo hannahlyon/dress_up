@@ -357,4 +357,9 @@ main {
     .item-image {
         height: 120px;
     }
+
+    .randomize-btn {
+        margin-left: 0;
+        margin-top: 15px;
+    }
 }

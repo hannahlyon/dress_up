@@ -121,7 +121,6 @@ main {
 
 .item-card.selected {
     border-color: #000000;
-    background-color: #000000;
 }
 
 .item-image {
@@ -130,10 +129,6 @@ main {
     object-fit: contain;
     display: block;
     background-color: #ffffff;
-}
-
-.item-card.selected .item-image {
-    filter: invert(1);
 }
 
 .empty-category {
@@ -174,6 +169,24 @@ main {
 .plus-icon {
     font-size: 1.5rem;
     font-weight: bold;
+}
+
+.randomize-btn {
+    background-color: #000000;
+    color: #ffffff;
+    border: none;
+    padding: 15px 30px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    transition: background-color 0.2s;
+    margin-left: 15px;
+}
+
+.randomize-btn:hover {
+    background-color: #333333;
 }
 
 .category-count {

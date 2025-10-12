@@ -11,6 +11,7 @@ const availableCategories = ['tops', 'outwear', 'dresses', 'bottoms', 'shoes', '
 
 // DOM elements
 const addCategoryBtn = document.getElementById('add-category-btn');
+const randomizeBtn = document.getElementById('randomize-btn');
 const categoryModal = document.getElementById('category-modal');
 const categoriesContainer = document.getElementById('categories-container');
 const outfitPreview = document.getElementById('outfit-preview');
@@ -23,6 +24,7 @@ async function init() {
     await loadItemsData();
 
     addCategoryBtn.addEventListener('click', openCategoryModal);
+    randomizeBtn.addEventListener('click', randomizeOutfit);
     clearOutfitBtn.addEventListener('click', clearOutfit);
 
     // Modal event listeners
@@ -273,6 +275,49 @@ function clearOutfit() {
         card.classList.remove('selected');
     });
 
+    updateOutfitPreview();
+}
+
+// Randomize outfit - picks 3 random categories and 1 random item from each
+async function randomizeOutfit() {
+    // Clear current outfit and categories
+    clearOutfit();
+    state.categories = [];
+    categoriesContainer.innerHTML = '';
+
+    // Pick 3 random categories
+    const shuffledCategories = [...availableCategories].sort(() => Math.random() - 0.5);
+    const selectedCategories = shuffledCategories.slice(0, 3);
+
+    // Add the categories and select random items
+    for (const category of selectedCategories) {
+        await addCategory(category);
+
+        // Get items for this category
+        const items = await loadCategoryItems(category);
+
+        if (items.length > 0) {
+            // Pick a random item
+            const randomItem = items[Math.floor(Math.random() * items.length)];
+
+            // Select the item
+            state.selectedItems[category] = randomItem;
+
+            // Update UI to show selection
+            const categorySection = document.querySelector(`[data-category="${category}"]`);
+            if (categorySection) {
+                const itemCards = categorySection.querySelectorAll('.item-card');
+                itemCards.forEach(card => {
+                    const img = card.querySelector('.item-image');
+                    if (img.src.endsWith(randomItem)) {
+                        card.classList.add('selected');
+                    }
+                });
+            }
+        }
+    }
+
+    // Update the outfit preview
     updateOutfitPreview();
 }
 

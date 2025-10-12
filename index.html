@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Outfit Creator</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Outfit Creator</h1>
+            <p class="subtitle">Create your perfect outfit from the streamer's closet</p>
+        </header>
+
+        <main>
+            <div id="categories-container">
+                <!-- Categories will be added dynamically -->
+            </div>
+
+            <div id="add-category-container">
+                <button id="add-category-btn" class="add-btn">
+                    <span class="plus-icon">+</span>
+                    <span>Add Category</span>
+                </button>
+                <p class="category-count">0 / 5 categories added</p>
+            </div>
+
+            <div id="selected-outfit">
+                <h2>Your Outfit</h2>
+                <div id="outfit-preview">
+                    <p class="empty-state">Select items from categories to build your outfit</p>
+                </div>
+                <button id="clear-outfit-btn" class="secondary-btn">Clear Outfit</button>
+            </div>
+        </main>
+
+        <div id="category-modal" class="modal">
+            <div class="modal-content">
+                <h2>Select a Category</h2>
+                <div class="category-options">
+                    <button class="category-option" data-category="tops">Tops</button>
+                    <button class="category-option" data-category="outwear">Outerwear</button>
+                    <button class="category-option" data-category="dresses">Dresses</button>
+                    <button class="category-option" data-category="bottoms">Bottoms</button>
+                    <button class="category-option" data-category="shoes">Shoes</button>
+                    <button class="category-option" data-category="bags">Bags</button>
+                    <button class="category-option" data-category="accessories">Accessories</button>
+                </div>
+                <button class="close-modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

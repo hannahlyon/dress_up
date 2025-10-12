@@ -1,0 +1,345 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    background-color: #ffffff;
+    color: #000000;
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+header {
+    text-align: center;
+    padding: 40px 0;
+    border-bottom: 2px solid #000000;
+    margin-bottom: 40px;
+}
+
+h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.subtitle {
+    font-size: 1rem;
+    color: #666666;
+}
+
+main {
+    min-height: 60vh;
+}
+
+#categories-container {
+    margin-bottom: 40px;
+}
+
+.category-section {
+    margin-bottom: 30px;
+    border: 2px solid #000000;
+    padding: 20px;
+    background-color: #ffffff;
+}
+
+.category-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.category-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+.remove-category-btn {
+    background-color: #000000;
+    color: #ffffff;
+    border: none;
+    padding: 8px 16px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background-color 0.2s;
+}
+
+.remove-category-btn:hover {
+    background-color: #333333;
+}
+
+.items-scroll-container {
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+    padding: 10px 0;
+    scrollbar-width: thin;
+    scrollbar-color: #000000 #f0f0f0;
+}
+
+.items-scroll-container::-webkit-scrollbar {
+    height: 8px;
+}
+
+.items-scroll-container::-webkit-scrollbar-track {
+    background: #f0f0f0;
+}
+
+.items-scroll-container::-webkit-scrollbar-thumb {
+    background: #000000;
+    border-radius: 4px;
+}
+
+.items-scroll-container::-webkit-scrollbar-thumb:hover {
+    background: #333333;
+}
+
+.item-card {
+    display: inline-block;
+    width: 150px;
+    margin-right: 15px;
+    cursor: pointer;
+    border: 3px solid transparent;
+    padding: 10px;
+    background-color: #f9f9f9;
+    transition: all 0.2s;
+    vertical-align: top;
+}
+
+.item-card:hover {
+    border-color: #666666;
+}
+
+.item-card.selected {
+    border-color: #000000;
+    background-color: #000000;
+}
+
+.item-image {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    display: block;
+}
+
+.item-card.selected .item-image {
+    filter: invert(1);
+}
+
+.empty-category {
+    text-align: center;
+    padding: 40px;
+    color: #999999;
+    font-style: italic;
+}
+
+#add-category-container {
+    text-align: center;
+    padding: 40px;
+    margin-bottom: 40px;
+}
+
+.add-btn {
+    background-color: #000000;
+    color: #ffffff;
+    border: none;
+    padding: 15px 30px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    transition: background-color 0.2s;
+}
+
+.add-btn:hover {
+    background-color: #333333;
+}
+
+.add-btn:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+.plus-icon {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.category-count {
+    margin-top: 10px;
+    color: #666666;
+    font-size: 0.9rem;
+}
+
+#selected-outfit {
+    border-top: 2px solid #000000;
+    padding-top: 40px;
+    margin-top: 40px;
+}
+
+#selected-outfit h2 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+#outfit-preview {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    min-height: 200px;
+    padding: 30px;
+    background-color: #f9f9f9;
+    border: 2px solid #000000;
+    margin-bottom: 20px;
+}
+
+.empty-state {
+    text-align: center;
+    color: #999999;
+    font-style: italic;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.outfit-item {
+    text-align: center;
+}
+
+.outfit-item-label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+    text-transform: capitalize;
+}
+
+.outfit-item-image {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border: 2px solid #000000;
+}
+
+.secondary-btn {
+    background-color: #ffffff;
+    color: #000000;
+    border: 2px solid #000000;
+    padding: 12px 24px;
+    font-size: 1rem;
+    cursor: pointer;
+    display: block;
+    margin: 0 auto;
+    transition: all 0.2s;
+}
+
+.secondary-btn:hover {
+    background-color: #000000;
+    color: #ffffff;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal.active {
+    display: flex;
+}
+
+.modal-content {
+    background-color: #ffffff;
+    padding: 40px;
+    max-width: 500px;
+    width: 90%;
+    border: 3px solid #000000;
+}
+
+.modal-content h2 {
+    font-size: 1.8rem;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.category-options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.category-option {
+    background-color: #ffffff;
+    color: #000000;
+    border: 2px solid #000000;
+    padding: 20px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-weight: 500;
+}
+
+.category-option:hover {
+    background-color: #000000;
+    color: #ffffff;
+}
+
+.category-option:disabled {
+    background-color: #f0f0f0;
+    color: #cccccc;
+    border-color: #cccccc;
+    cursor: not-allowed;
+}
+
+.close-modal {
+    background-color: #ffffff;
+    color: #000000;
+    border: 2px solid #000000;
+    padding: 12px 24px;
+    font-size: 1rem;
+    cursor: pointer;
+    width: 100%;
+    transition: all 0.2s;
+}
+
+.close-modal:hover {
+    background-color: #f0f0f0;
+}
+
+@media (max-width: 768px) {
+    h1 {
+        font-size: 2rem;
+    }
+
+    .category-options {
+        grid-template-columns: 1fr;
+    }
+
+    .item-card {
+        width: 120px;
+    }
+
+    .item-image {
+        height: 120px;
+    }
+}

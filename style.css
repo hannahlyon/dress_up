@@ -4,11 +4,96 @@
     box-sizing: border-box;
 }
 
+:root {
+    --bg-primary: #ffffff;
+    --bg-secondary: #f9f9f9;
+    --bg-tertiary: #f0f0f0;
+    --text-primary: #000000;
+    --text-secondary: #666666;
+    --text-tertiary: #999999;
+    --border-primary: #000000;
+    --border-secondary: #666666;
+    --button-bg: #000000;
+    --button-text: #ffffff;
+    --button-hover: #333333;
+    --disabled-bg: #cccccc;
+    --disabled-text: #cccccc;
+    --disabled-border: #cccccc;
+    --modal-overlay: rgba(0, 0, 0, 0.8);
+}
+
+body.dark-mode {
+    --bg-primary: #121212;
+    --bg-secondary: #1e1e1e;
+    --bg-tertiary: #2a2a2a;
+    --text-primary: #ffffff;
+    --text-secondary: #b3b3b3;
+    --text-tertiary: #808080;
+    --border-primary: #ffffff;
+    --border-secondary: #b3b3b3;
+    --button-bg: #ffffff;
+    --button-text: #000000;
+    --button-hover: #e0e0e0;
+    --disabled-bg: #3a3a3a;
+    --disabled-text: #5a5a5a;
+    --disabled-border: #3a3a3a;
+    --modal-overlay: rgba(255, 255, 255, 0.1);
+}
+
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-    background-color: #ffffff;
-    color: #000000;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
     line-height: 1.6;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.theme-toggle-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 999;
+}
+
+.theme-toggle {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 26px;
+    cursor: pointer;
+}
+
+.theme-toggle input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.toggle-slider {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--border-primary);
+    transition: 0.3s;
+    border-radius: 26px;
+}
+
+.toggle-slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 4px;
+    bottom: 4px;
+    background-color: var(--bg-primary);
+    transition: 0.3s;
+    border-radius: 50%;
+}
+
+.theme-toggle input:checked + .toggle-slider:before {
+    transform: translateX(24px);
 }
 
 .container {
@@ -20,7 +105,7 @@ body {
 header {
     text-align: center;
     padding: 40px 0;
-    border-bottom: 2px solid #000000;
+    border-bottom: 2px solid var(--border-primary);
     margin-bottom: 40px;
 }
 
@@ -32,7 +117,7 @@ h1 {
 
 .subtitle {
     font-size: 1rem;
-    color: #666666;
+    color: var(--text-secondary);
 }
 
 main {
@@ -45,9 +130,10 @@ main {
 
 .category-section {
     margin-bottom: 30px;
-    border: 2px solid #000000;
+    border: 2px solid var(--border-primary);
     padding: 20px;
-    background-color: #ffffff;
+    background-color: var(--bg-primary);
+    transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 .category-header {
@@ -64,8 +150,8 @@ main {
 }
 
 .remove-category-btn {
-    background-color: #000000;
-    color: #ffffff;
+    background-color: var(--button-bg);
+    color: var(--button-text);
     border: none;
     padding: 8px 16px;
     cursor: pointer;
@@ -74,7 +160,7 @@ main {
 }
 
 .remove-category-btn:hover {
-    background-color: #333333;
+    background-color: var(--button-hover);
 }
 
 .items-scroll-container {
@@ -83,7 +169,7 @@ main {
     white-space: nowrap;
     padding: 10px 0;
     scrollbar-width: thin;
-    scrollbar-color: #000000 #f0f0f0;
+    scrollbar-color: var(--border-primary) var(--bg-tertiary);
 }
 
 .items-scroll-container::-webkit-scrollbar {
@@ -91,16 +177,16 @@ main {
 }
 
 .items-scroll-container::-webkit-scrollbar-track {
-    background: #f0f0f0;
+    background: var(--bg-tertiary);
 }
 
 .items-scroll-container::-webkit-scrollbar-thumb {
-    background: #000000;
+    background: var(--border-primary);
     border-radius: 4px;
 }
 
 .items-scroll-container::-webkit-scrollbar-thumb:hover {
-    background: #333333;
+    background: var(--button-hover);
 }
 
 .item-card {
@@ -110,17 +196,17 @@ main {
     cursor: pointer;
     border: 3px solid transparent;
     padding: 10px;
-    background-color: #f9f9f9;
+    background-color: var(--bg-secondary);
     transition: all 0.2s;
     vertical-align: top;
 }
 
 .item-card:hover {
-    border-color: #666666;
+    border-color: var(--border-secondary);
 }
 
 .item-card.selected {
-    border-color: #000000;
+    border-color: var(--border-primary);
 }
 
 .item-image {
@@ -128,13 +214,13 @@ main {
     height: 150px;
     object-fit: contain;
     display: block;
-    background-color: #ffffff;
+    background-color: var(--bg-primary);
 }
 
 .empty-category {
     text-align: center;
     padding: 40px;
-    color: #999999;
+    color: var(--text-tertiary);
     font-style: italic;
 }
 
@@ -145,8 +231,8 @@ main {
 }
 
 .add-btn {
-    background-color: #000000;
-    color: #ffffff;
+    background-color: var(--button-bg);
+    color: var(--button-text);
     border: none;
     padding: 15px 30px;
     font-size: 1.1rem;
@@ -158,11 +244,11 @@ main {
 }
 
 .add-btn:hover {
-    background-color: #333333;
+    background-color: var(--button-hover);
 }
 
 .add-btn:disabled {
-    background-color: #cccccc;
+    background-color: var(--disabled-bg);
     cursor: not-allowed;
 }
 
@@ -172,8 +258,8 @@ main {
 }
 
 .randomize-btn {
-    background-color: #000000;
-    color: #ffffff;
+    background-color: var(--button-bg);
+    color: var(--button-text);
     border: none;
     padding: 15px 30px;
     font-size: 1.1rem;
@@ -186,17 +272,17 @@ main {
 }
 
 .randomize-btn:hover {
-    background-color: #333333;
+    background-color: var(--button-hover);
 }
 
 .category-count {
     margin-top: 10px;
-    color: #666666;
+    color: var(--text-secondary);
     font-size: 0.9rem;
 }
 
 #selected-outfit {
-    border-top: 2px solid #000000;
+    border-top: 2px solid var(--border-primary);
     padding-top: 40px;
     margin-top: 40px;
 }
@@ -214,14 +300,15 @@ main {
     justify-content: center;
     min-height: 200px;
     padding: 30px;
-    background-color: #f9f9f9;
-    border: 2px solid #000000;
+    background-color: var(--bg-secondary);
+    border: 2px solid var(--border-primary);
     margin-bottom: 20px;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 .empty-state {
     text-align: center;
-    color: #999999;
+    color: var(--text-tertiary);
     font-style: italic;
     width: 100%;
     display: flex;
@@ -231,6 +318,9 @@ main {
 
 .outfit-item {
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .outfit-item-label {
@@ -241,28 +331,57 @@ main {
 }
 
 .outfit-item-image {
-    width: 120px;
-    height: 120px;
+    max-width: 200px;
+    max-height: 200px;
+    width: auto;
+    height: auto;
     object-fit: contain;
-    border: 2px solid #000000;
-    background-color: #ffffff;
+    border: 2px solid var(--border-primary);
+    background-color: var(--bg-primary);
+    display: block;
 }
 
-.secondary-btn {
-    background-color: #ffffff;
-    color: #000000;
-    border: 2px solid #000000;
+.outfit-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    align-items: center;
+}
+
+.primary-btn {
+    background-color: var(--button-bg);
+    color: var(--button-text);
+    border: none;
     padding: 12px 24px;
     font-size: 1rem;
     cursor: pointer;
-    display: block;
-    margin: 0 auto;
+    transition: all 0.2s;
+    font-weight: 500;
+}
+
+.primary-btn:hover {
+    background-color: var(--button-hover);
+}
+
+.primary-btn:disabled {
+    background-color: var(--disabled-bg);
+    color: var(--disabled-text);
+    cursor: not-allowed;
+}
+
+.secondary-btn {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    border: 2px solid var(--border-primary);
+    padding: 12px 24px;
+    font-size: 1rem;
+    cursor: pointer;
     transition: all 0.2s;
 }
 
 .secondary-btn:hover {
-    background-color: #000000;
-    color: #ffffff;
+    background-color: var(--button-bg);
+    color: var(--button-text);
 }
 
 .modal {
@@ -272,7 +391,8 @@ main {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.8);
+    background-color: var(--modal-overlay);
+    backdrop-filter: blur(5px);
     z-index: 1000;
     justify-content: center;
     align-items: center;
@@ -283,11 +403,12 @@ main {
 }
 
 .modal-content {
-    background-color: #ffffff;
+    background-color: var(--bg-primary);
     padding: 40px;
     max-width: 500px;
     width: 90%;
-    border: 3px solid #000000;
+    border: 3px solid var(--border-primary);
+    transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 .modal-content h2 {
@@ -304,9 +425,9 @@ main {
 }
 
 .category-option {
-    background-color: #ffffff;
-    color: #000000;
-    border: 2px solid #000000;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    border: 2px solid var(--border-primary);
     padding: 20px;
     font-size: 1rem;
     cursor: pointer;
@@ -315,21 +436,21 @@ main {
 }
 
 .category-option:hover {
-    background-color: #000000;
-    color: #ffffff;
+    background-color: var(--button-bg);
+    color: var(--button-text);
 }
 
 .category-option:disabled {
-    background-color: #f0f0f0;
-    color: #cccccc;
-    border-color: #cccccc;
+    background-color: var(--disabled-bg);
+    color: var(--disabled-text);
+    border-color: var(--disabled-border);
     cursor: not-allowed;
 }
 
 .close-modal {
-    background-color: #ffffff;
-    color: #000000;
-    border: 2px solid #000000;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    border: 2px solid var(--border-primary);
     padding: 12px 24px;
     font-size: 1rem;
     cursor: pointer;
@@ -338,7 +459,37 @@ main {
 }
 
 .close-modal:hover {
-    background-color: #f0f0f0;
+    background-color: var(--bg-tertiary);
+}
+
+.share-options {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.share-option {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    border: 2px solid var(--border-primary);
+    padding: 20px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.share-option:hover {
+    background-color: var(--button-bg);
+    color: var(--button-text);
+}
+
+.share-icon {
+    font-size: 1.5rem;
 }
 
 @media (max-width: 768px) {
@@ -361,5 +512,14 @@ main {
     .randomize-btn {
         margin-left: 0;
         margin-top: 15px;
+    }
+
+    .outfit-actions {
+        flex-direction: column;
+    }
+
+    .primary-btn,
+    .secondary-btn {
+        width: 100%;
     }
 }

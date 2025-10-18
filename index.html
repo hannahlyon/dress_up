@@ -7,6 +7,12 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
+    <div class="theme-toggle-container">
+      <label class="theme-toggle">
+        <input type="checkbox" id="theme-toggle-checkbox" />
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
     <div class="container">
       <header>
         <h1>Hannahbunnn's Outfit Creator</h1>
@@ -38,9 +44,14 @@
               Select items from categories to build your outfit
             </p>
           </div>
-          <button id="clear-outfit-btn" class="secondary-btn">
-            Clear Outfit
-          </button>
+          <div class="outfit-actions">
+            <button id="share-outfit-btn" class="primary-btn">
+              Share Outfit
+            </button>
+            <button id="clear-outfit-btn" class="secondary-btn">
+              Clear Outfit
+            </button>
+          </div>
         </div>
       </main>
 
@@ -63,12 +74,37 @@
             <button class="category-option" data-category="accessories">
               Accessories
             </button>
+            <button class="category-option" data-category="molly">
+              Molly
+            </button>
           </div>
           <button class="close-modal">Cancel</button>
         </div>
       </div>
+
+      <div id="share-modal" class="modal">
+        <div class="modal-content">
+          <h2>Share Your Outfit</h2>
+          <div class="share-options">
+            <button class="share-option" id="share-email">
+              <span class="share-icon">📧</span>
+              <span>Send to Hannah</span>
+            </button>
+            <button class="share-option" id="share-messages">
+              <span class="share-icon">💌</span>
+              <span>Send in Messages</span>
+            </button>
+            <button class="share-option" id="download-image">
+              <span class="share-icon">⬇️</span>
+              <span>Download Image</span>
+            </button>
+          </div>
+          <button class="close-modal" id="close-share-modal">Cancel</button>
+        </div>
+      </div>
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="script.js"></script>
   </body>
 </html>

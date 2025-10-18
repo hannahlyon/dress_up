@@ -459,8 +459,12 @@ async function shareViaEmail() {
   shareEmailBtn.disabled = true;
 
   try {
-    // Send to backend API
-    const response = await fetch("http://localhost:5000/send-outfit", {
+    // Send to backend API (use Heroku URL in production, localhost in development)
+    const apiUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+      ? "http://localhost:5000/send-outfit"
+      : "https://dressup-email-server-e2afb61f7c19.herokuapp.com/send-outfit";
+
+    const response = await fetch(apiUrl, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

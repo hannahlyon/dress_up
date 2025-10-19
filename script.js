@@ -380,10 +380,22 @@ function updateUI() {
 function initDarkMode() {
   const themeToggleCheckbox = document.getElementById("theme-toggle-checkbox");
 
-  // Check for saved theme preference or default to light mode
+  // Check for saved theme preference or use system preference
   const savedTheme = localStorage.getItem("theme");
+  const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
 
-  if (savedTheme === "dark") {
+  // Determine initial theme
+  let isDarkMode = false;
+  if (savedTheme) {
+    // Use saved preference if it exists
+    isDarkMode = savedTheme === "dark";
+  } else {
+    // Otherwise use system preference
+    isDarkMode = prefersDark;
+  }
+
+  // Apply initial theme
+  if (isDarkMode) {
     document.body.classList.add("dark-mode");
     themeToggleCheckbox.checked = true;
   }
@@ -396,6 +408,20 @@ function initDarkMode() {
     } else {
       document.body.classList.remove("dark-mode");
       localStorage.setItem("theme", "light");
+    }
+  });
+
+  // Listen for system theme changes (optional - updates if user changes system theme)
+  window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", (e) => {
+    // Only auto-switch if user hasn't set a manual preference
+    if (!localStorage.getItem("theme")) {
+      if (e.matches) {
+        document.body.classList.add("dark-mode");
+        themeToggleCheckbox.checked = true;
+      } else {
+        document.body.classList.remove("dark-mode");
+        themeToggleCheckbox.checked = false;
+      }
     }
   });
 }

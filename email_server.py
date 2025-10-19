@@ -4,6 +4,9 @@ Email server for sending outfit images to Hannah
 """
 import os
 import base64
+import time
+import secrets
+from collections import defaultdict
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import smtplib
@@ -16,18 +19,101 @@ from dotenv import load_dotenv
 load_dotenv()
 
 app = Flask(__name__)
-CORS(app)  # Enable CORS for all routes
+
+# Configure CORS to only allow your domain
+ALLOWED_ORIGINS = [
+    'https://dressup.hannahbunnn.com',
+    'http://localhost:8000',
+    'http://127.0.0.1:8000'
+]
+
+CORS(app, origins=ALLOWED_ORIGINS)
+
+# Rate limiting storage (IP -> list of timestamps)
+rate_limit_storage = defaultdict(list)
+
+# Security configuration
+MAX_REQUESTS_PER_HOUR = 10  # Max 10 emails per hour per IP
+MAX_REQUESTS_PER_MINUTE = 2  # Max 2 emails per minute per IP
+MAX_IMAGE_SIZE = 10 * 1024 * 1024  # 10MB max image size
+REQUEST_WINDOW_HOUR = 3600  # 1 hour in seconds
+REQUEST_WINDOW_MINUTE = 60  # 1 minute in seconds
+
+# Simple shared secret for authentication
+API_SECRET = os.getenv('API_SECRET', secrets.token_urlsafe(32))
+
+def get_client_ip():
+    """Get the real client IP address"""
+    # Check if behind a proxy (Heroku)
+    if request.headers.get('X-Forwarded-For'):
+        return request.headers.get('X-Forwarded-For').split(',')[0].strip()
+    return request.remote_addr
+
+def is_rate_limited(ip_address):
+    """Check if IP address has exceeded rate limits"""
+    now = time.time()
+
+    # Clean up old entries
+    rate_limit_storage[ip_address] = [
+        timestamp for timestamp in rate_limit_storage[ip_address]
+        if now - timestamp < REQUEST_WINDOW_HOUR
+    ]
+
+    timestamps = rate_limit_storage[ip_address]
+
+    # Check minute limit
+    recent_minute = [t for t in timestamps if now - t < REQUEST_WINDOW_MINUTE]
+    if len(recent_minute) >= MAX_REQUESTS_PER_MINUTE:
+        return True, 'Too many requests. Please wait a minute.'
+
+    # Check hour limit
+    if len(timestamps) >= MAX_REQUESTS_PER_HOUR:
+        return True, 'Too many requests. Please try again later.'
+
+    return False, None
+
+def verify_origin():
+    """Verify the request is coming from an allowed origin"""
+    origin = request.headers.get('Origin', '')
+    referer = request.headers.get('Referer', '')
+
+    # Check if either origin or referer matches allowed domains
+    for allowed in ALLOWED_ORIGINS:
+        if origin.startswith(allowed) or referer.startswith(allowed):
+            return True
+
+    return False
 
 @app.route('/send-outfit', methods=['POST'])
 def send_outfit():
     """Send outfit image via email to Hannah"""
     try:
+        # 1. Verify origin
+        if not verify_origin():
+            return jsonify({'success': False, 'error': 'Unauthorized origin'}), 403
+
+        # 2. Check rate limiting
+        client_ip = get_client_ip()
+        is_limited, limit_msg = is_rate_limited(client_ip)
+        if is_limited:
+            return jsonify({'success': False, 'error': limit_msg}), 429
+
+        # 3. Verify authentication token
+        auth_header = request.headers.get('X-API-Secret')
+        if not auth_header or auth_header != API_SECRET:
+            return jsonify({'success': False, 'error': 'Invalid authentication'}), 401
+
         # Get the image data from the request
         data = request.json
         image_data = data.get('image')
 
         if not image_data:
             return jsonify({'success': False, 'error': 'No image data provided'}), 400
+
+        # 4. Check image size
+        estimated_size = len(image_data) * 0.75  # Base64 is ~33% larger than binary
+        if estimated_size > MAX_IMAGE_SIZE:
+            return jsonify({'success': False, 'error': 'Image too large'}), 413
 
         # Remove the data URL prefix if present
         if ',' in image_data:
@@ -79,6 +165,9 @@ def send_outfit():
                 server.starttls()
                 server.login(email_user, email_pass)
                 server.send_message(msg)
+
+        # Record successful request for rate limiting
+        rate_limit_storage[client_ip].append(time.time())
 
         return jsonify({'success': True, 'message': 'Outfit sent to Hannah successfully!'})
 

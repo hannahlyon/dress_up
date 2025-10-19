@@ -468,6 +468,7 @@ async function shareViaEmail() {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "X-API-Secret": "7iSOJxNUg5XGr6dS9AOdQYmfgIzXK6AG3WFgC_wCy_Q"
       },
       body: JSON.stringify({
         image: imageDataURL,

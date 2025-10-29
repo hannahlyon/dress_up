@@ -223,7 +223,13 @@ async function loadCategoryItems(category) {
 function createItemCard(category, itemFilename) {
   const itemCard = document.createElement("div");
   itemCard.className = "item-card";
-  if (state.selectedItems[category] === itemFilename) {
+
+  // Check if item is selected (handle both string and array for accessories)
+  if (category === "accessories" && Array.isArray(state.selectedItems[category])) {
+    if (state.selectedItems[category].includes(itemFilename)) {
+      itemCard.classList.add("selected");
+    }
+  } else if (state.selectedItems[category] === itemFilename) {
     itemCard.classList.add("selected");
   }
 
@@ -244,27 +250,64 @@ function createItemCard(category, itemFilename) {
 
 // Select an item
 function selectItem(category, itemFilename) {
-  // Toggle selection
-  if (state.selectedItems[category] === itemFilename) {
-    delete state.selectedItems[category];
-  } else {
-    state.selectedItems[category] = itemFilename;
-  }
+  // Handle accessories differently - allow multiple selections
+  if (category === "accessories") {
+    // Initialize as array if it doesn't exist
+    if (!state.selectedItems[category]) {
+      state.selectedItems[category] = [];
+    }
 
-  // Update the category section to show selection
-  const categorySection = document.querySelector(
-    `[data-category="${category}"]`
-  );
-  if (categorySection) {
-    const itemCards = categorySection.querySelectorAll(".item-card");
-    itemCards.forEach((card) => {
-      const img = card.querySelector(".item-image");
-      if (img.src.endsWith(itemFilename)) {
-        card.classList.toggle("selected");
-      } else {
-        card.classList.remove("selected");
+    // Toggle selection
+    const index = state.selectedItems[category].indexOf(itemFilename);
+    if (index > -1) {
+      // Item is already selected, remove it
+      state.selectedItems[category].splice(index, 1);
+
+      // If no items left, delete the category
+      if (state.selectedItems[category].length === 0) {
+        delete state.selectedItems[category];
       }
-    });
+    } else {
+      // Add item to selection
+      state.selectedItems[category].push(itemFilename);
+    }
+
+    // Update the category section to show selection
+    const categorySection = document.querySelector(
+      `[data-category="${category}"]`
+    );
+    if (categorySection) {
+      const itemCards = categorySection.querySelectorAll(".item-card");
+      itemCards.forEach((card) => {
+        const img = card.querySelector(".item-image");
+        if (img.src.endsWith(itemFilename)) {
+          card.classList.toggle("selected");
+        }
+      });
+    }
+  } else {
+    // For other categories, single selection behavior
+    if (state.selectedItems[category] === itemFilename) {
+      delete state.selectedItems[category];
+    } else {
+      state.selectedItems[category] = itemFilename;
+    }
+
+    // Update the category section to show selection
+    const categorySection = document.querySelector(
+      `[data-category="${category}"]`
+    );
+    if (categorySection) {
+      const itemCards = categorySection.querySelectorAll(".item-card");
+      itemCards.forEach((card) => {
+        const img = card.querySelector(".item-image");
+        if (img.src.endsWith(itemFilename)) {
+          card.classList.toggle("selected");
+        } else {
+          card.classList.remove("selected");
+        }
+      });
+    }
   }
 
   updateOutfitPreview();
@@ -283,22 +326,45 @@ function updateOutfitPreview() {
       "Select items from categories to build your outfit";
     outfitPreview.appendChild(emptyState);
   } else {
-    Object.entries(state.selectedItems).forEach(([category, itemFilename]) => {
-      const outfitItem = document.createElement("div");
-      outfitItem.className = "outfit-item";
+    Object.entries(state.selectedItems).forEach(([category, itemData]) => {
+      // Handle accessories as array, other categories as single item
+      if (category === "accessories" && Array.isArray(itemData)) {
+        // Display each accessory separately
+        itemData.forEach((itemFilename) => {
+          const outfitItem = document.createElement("div");
+          outfitItem.className = "outfit-item";
 
-      const label = document.createElement("div");
-      label.className = "outfit-item-label";
-      label.textContent = category;
+          const label = document.createElement("div");
+          label.className = "outfit-item-label";
+          label.textContent = category;
 
-      const img = document.createElement("img");
-      img.className = "outfit-item-image";
-      img.src = `clothes/${category}/${itemFilename}`;
-      img.alt = `${category} - ${itemFilename}`;
+          const img = document.createElement("img");
+          img.className = "outfit-item-image";
+          img.src = `clothes/${category}/${itemFilename}`;
+          img.alt = `${category} - ${itemFilename}`;
 
-      outfitItem.appendChild(label);
-      outfitItem.appendChild(img);
-      outfitPreview.appendChild(outfitItem);
+          outfitItem.appendChild(label);
+          outfitItem.appendChild(img);
+          outfitPreview.appendChild(outfitItem);
+        });
+      } else {
+        // Single item display for other categories
+        const outfitItem = document.createElement("div");
+        outfitItem.className = "outfit-item";
+
+        const label = document.createElement("div");
+        label.className = "outfit-item-label";
+        label.textContent = category;
+
+        const img = document.createElement("img");
+        img.className = "outfit-item-image";
+        img.src = `clothes/${category}/${itemData}`;
+        img.alt = `${category} - ${itemData}`;
+
+        outfitItem.appendChild(label);
+        outfitItem.appendChild(img);
+        outfitPreview.appendChild(outfitItem);
+      }
     });
   }
 }
@@ -337,24 +403,48 @@ async function randomizeOutfit() {
     const items = await loadCategoryItems(category);
 
     if (items.length > 0) {
-      // Pick a random item
-      const randomItem = items[Math.floor(Math.random() * items.length)];
+      // For accessories, select 1-2 random items
+      if (category === "accessories") {
+        const numAccessories = Math.min(Math.floor(Math.random() * 2) + 1, items.length);
+        const shuffledItems = [...items].sort(() => Math.random() - 0.5);
+        const selectedAccessories = shuffledItems.slice(0, numAccessories);
 
-      // Select the item
-      state.selectedItems[category] = randomItem;
+        // Set as array
+        state.selectedItems[category] = selectedAccessories;
 
-      // Update UI to show selection
-      const categorySection = document.querySelector(
-        `[data-category="${category}"]`
-      );
-      if (categorySection) {
-        const itemCards = categorySection.querySelectorAll(".item-card");
-        itemCards.forEach((card) => {
-          const img = card.querySelector(".item-image");
-          if (img.src.endsWith(randomItem)) {
-            card.classList.add("selected");
-          }
-        });
+        // Update UI to show selections
+        const categorySection = document.querySelector(
+          `[data-category="${category}"]`
+        );
+        if (categorySection) {
+          const itemCards = categorySection.querySelectorAll(".item-card");
+          itemCards.forEach((card) => {
+            const img = card.querySelector(".item-image");
+            if (selectedAccessories.some(item => img.src.endsWith(item))) {
+              card.classList.add("selected");
+            }
+          });
+        }
+      } else {
+        // Pick a single random item for other categories
+        const randomItem = items[Math.floor(Math.random() * items.length)];
+
+        // Select the item
+        state.selectedItems[category] = randomItem;
+
+        // Update UI to show selection
+        const categorySection = document.querySelector(
+          `[data-category="${category}"]`
+        );
+        if (categorySection) {
+          const itemCards = categorySection.querySelectorAll(".item-card");
+          itemCards.forEach((card) => {
+            const img = card.querySelector(".item-image");
+            if (img.src.endsWith(randomItem)) {
+              card.classList.add("selected");
+            }
+          });
+        }
       }
     }
   }

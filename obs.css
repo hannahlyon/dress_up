@@ -1,0 +1,200 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Transparent background for OBS browser source */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    background-color: transparent;
+    color: #ffffff;
+    overflow: hidden;
+}
+
+#overlay-container {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+#outfit-display {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: center;
+    align-items: flex-start;
+    max-width: 100%;
+}
+
+#outfit-display.empty {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.waiting-state {
+    font-size: 1.2rem;
+    color: rgba(255, 255, 255, 0.7);
+    text-align: center;
+    font-style: italic;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.outfit-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.outfit-item-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+    text-transform: capitalize;
+    color: #ffffff;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 4px 12px;
+    border-radius: 4px;
+}
+
+.outfit-item-image {
+    max-width: 180px;
+    max-height: 180px;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    border: 3px solid rgba(255, 255, 255, 0.9);
+    background-color: rgba(255, 255, 255, 0.95);
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+}
+
+/* Layout options - can be customized via URL params */
+.layout-horizontal #outfit-display {
+    flex-direction: row;
+    flex-wrap: nowrap;
+}
+
+.layout-vertical #outfit-display {
+    flex-direction: column;
+}
+
+.layout-grid #outfit-display {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px;
+}
+
+/* Size variations */
+.size-small .outfit-item-image {
+    max-width: 120px;
+    max-height: 120px;
+}
+
+.size-small .outfit-item-label {
+    font-size: 0.75rem;
+}
+
+.size-large .outfit-item-image {
+    max-width: 250px;
+    max-height: 250px;
+}
+
+.size-large .outfit-item-label {
+    font-size: 1rem;
+}
+
+/* Theme options */
+.theme-dark .outfit-item-label {
+    background-color: rgba(0, 0, 0, 0.7);
+    color: #ffffff;
+}
+
+.theme-dark .outfit-item-image {
+    border-color: rgba(255, 255, 255, 0.8);
+}
+
+.theme-light .outfit-item-label {
+    background-color: rgba(255, 255, 255, 0.9);
+    color: #000000;
+    text-shadow: none;
+}
+
+.theme-light .outfit-item-image {
+    border-color: rgba(0, 0, 0, 0.8);
+}
+
+/* Transparent theme - minimal styling for clean overlay */
+.theme-transparent .outfit-item-label {
+    background-color: transparent;
+    color: #ffffff;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.9);
+}
+
+.theme-transparent .outfit-item-image {
+    border: none;
+    border-radius: 0;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* No labels option */
+.no-labels .outfit-item-label {
+    display: none;
+}
+
+/* Position options for alignment */
+.position-top-left #overlay-container {
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+
+.position-top-right #overlay-container {
+    justify-content: flex-end;
+    align-items: flex-start;
+}
+
+.position-bottom-left #overlay-container {
+    justify-content: flex-start;
+    align-items: flex-end;
+}
+
+.position-bottom-right #overlay-container {
+    justify-content: flex-end;
+    align-items: flex-end;
+}
+
+.position-center #overlay-container {
+    justify-content: center;
+    align-items: center;
+}
+
+/* Compact mode - smaller gaps and padding */
+.compact #outfit-display {
+    gap: 8px;
+}
+
+.compact #overlay-container {
+    padding: 10px;
+}
+
+.compact .outfit-item-label {
+    padding: 2px 8px;
+    margin-bottom: 4px;
+}

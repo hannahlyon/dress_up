@@ -6,6 +6,9 @@ const state = {
   itemsData: null,
 };
 
+// OBS localStorage key
+const OBS_STORAGE_KEY = 'obsOutfit';
+
 // Available category options
 const availableCategories = [
   "tops",
@@ -81,6 +84,22 @@ async function init() {
       closeCategoryModal();
     });
   });
+
+  // OBS button event listeners
+  const sendToObsBtn = document.getElementById("send-to-obs-btn");
+  if (sendToObsBtn) {
+    sendToObsBtn.addEventListener("click", sendToOBS);
+  }
+
+  const clearObsBtn = document.getElementById("clear-obs-btn");
+  if (clearObsBtn) {
+    clearObsBtn.addEventListener("click", clearOBS);
+  }
+
+  const copyObsUrlBtn = document.getElementById("copy-obs-url-btn");
+  if (copyObsUrlBtn) {
+    copyObsUrlBtn.addEventListener("click", copyOBSUrl);
+  }
 
   updateUI();
 }
@@ -672,6 +691,117 @@ async function downloadOutfitImage() {
   });
 
   closeShareModal();
+}
+
+// Get API URL based on environment
+function getApiUrl() {
+  return window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    ? "http://localhost:5001"
+    : "https://dressup-email-server-e49ebc6db462.herokuapp.com";
+}
+
+// Send outfit to OBS overlay
+async function sendToOBS() {
+  // Check if there are any selected items
+  if (Object.keys(state.selectedItems).length === 0) {
+    alert("Please select at least one item to send to OBS!");
+    return;
+  }
+
+  const sendToObsBtn = document.getElementById("send-to-obs-btn");
+  if (sendToObsBtn) {
+    const originalText = sendToObsBtn.innerHTML;
+    sendToObsBtn.innerHTML = "Sending...";
+    sendToObsBtn.disabled = true;
+
+    try {
+      const response = await fetch(`${getApiUrl()}/obs/outfit`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          outfit: state.selectedItems,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        sendToObsBtn.innerHTML = "Sent!";
+        setTimeout(() => {
+          sendToObsBtn.innerHTML = originalText;
+          sendToObsBtn.disabled = false;
+        }, 1500);
+      } else {
+        throw new Error(result.error || "Failed to send to OBS");
+      }
+    } catch (error) {
+      console.error("Error sending to OBS:", error);
+      alert("Failed to send to OBS. Make sure the server is running.");
+      sendToObsBtn.innerHTML = originalText;
+      sendToObsBtn.disabled = false;
+    }
+  }
+}
+
+// Clear outfit from OBS overlay
+async function clearOBS() {
+  const clearObsBtn = document.getElementById("clear-obs-btn");
+  if (clearObsBtn) {
+    const originalText = clearObsBtn.innerHTML;
+    clearObsBtn.innerHTML = "Clearing...";
+    clearObsBtn.disabled = true;
+
+    try {
+      const response = await fetch(`${getApiUrl()}/obs/outfit`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        clearObsBtn.innerHTML = "Cleared!";
+        setTimeout(() => {
+          clearObsBtn.innerHTML = originalText;
+          clearObsBtn.disabled = false;
+        }, 1500);
+      } else {
+        throw new Error(result.error || "Failed to clear OBS");
+      }
+    } catch (error) {
+      console.error("Error clearing OBS:", error);
+      alert("Failed to clear OBS. Make sure the server is running.");
+      clearObsBtn.innerHTML = originalText;
+      clearObsBtn.disabled = false;
+    }
+  }
+}
+
+// Copy OBS URL to clipboard
+function copyOBSUrl() {
+  const baseUrl = window.location.href.replace(/\/[^\/]*$/, '/');
+  const obsUrl = baseUrl + 'obs.html';
+
+  navigator.clipboard.writeText(obsUrl).then(() => {
+    const copyBtn = document.getElementById("copy-obs-url-btn");
+    if (copyBtn) {
+      const originalText = copyBtn.innerHTML;
+      copyBtn.innerHTML = "Copied!";
+      copyBtn.disabled = true;
+
+      setTimeout(() => {
+        copyBtn.innerHTML = originalText;
+        copyBtn.disabled = false;
+      }, 1500);
+    }
+  }).catch((err) => {
+    console.error("Failed to copy URL:", err);
+    alert("OBS URL: " + obsUrl);
+  });
 }
 
 // Initialize the app when DOM is loaded

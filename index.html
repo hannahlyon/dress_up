@@ -53,6 +53,40 @@
             </button>
           </div>
         </div>
+
+        <div id="obs-section">
+          <h2>OBS Overlay</h2>
+          <p class="obs-description">
+            Show the selected outfit on stream using OBS browser source
+          </p>
+          <div class="obs-actions">
+            <button id="send-to-obs-btn" class="primary-btn">
+              Send to OBS
+            </button>
+            <button id="clear-obs-btn" class="secondary-btn">
+              Clear OBS
+            </button>
+            <button id="copy-obs-url-btn" class="tertiary-btn">
+              Copy OBS URL
+            </button>
+          </div>
+          <div class="obs-instructions">
+            <details>
+              <summary>Setup Instructions</summary>
+              <ol>
+                <li>In OBS, add a new Browser Source</li>
+                <li>Click "Copy OBS URL" above and paste it as the URL</li>
+                <li>Set width to 800 and height to 400 (adjust as needed)</li>
+                <li>Enable "Refresh browser when scene becomes active"</li>
+                <li>Click OK to save</li>
+              </ol>
+              <p class="obs-tip">
+                Customize the overlay by adding URL parameters:<br>
+                <code>?layout=vertical&size=small&theme=light</code>
+              </p>
+            </details>
+          </div>
+        </div>
       </main>
 
       <div id="category-modal" class="modal">

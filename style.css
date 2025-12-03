@@ -384,6 +384,21 @@ main {
     color: var(--button-text);
 }
 
+.tertiary-btn {
+    background-color: var(--bg-tertiary);
+    color: var(--text-primary);
+    border: 2px solid var(--border-secondary);
+    padding: 12px 24px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.tertiary-btn:hover {
+    background-color: var(--bg-secondary);
+    border-color: var(--border-primary);
+}
+
 .modal {
     display: none;
     position: fixed;
@@ -492,6 +507,77 @@ main {
     font-size: 1.5rem;
 }
 
+/* OBS Section */
+#obs-section {
+    border-top: 2px solid var(--border-primary);
+    padding-top: 40px;
+    margin-top: 40px;
+}
+
+#obs-section h2 {
+    font-size: 2rem;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.obs-description {
+    text-align: center;
+    color: var(--text-secondary);
+    margin-bottom: 20px;
+}
+
+.obs-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 30px;
+}
+
+.obs-instructions {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-secondary);
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.obs-instructions summary {
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 1.1rem;
+    padding: 5px 0;
+}
+
+.obs-instructions ol {
+    margin: 15px 0 15px 20px;
+    line-height: 1.8;
+}
+
+.obs-instructions li {
+    margin-bottom: 8px;
+}
+
+.obs-tip {
+    margin-top: 15px;
+    padding: 15px;
+    background-color: var(--bg-tertiary);
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.obs-tip code {
+    display: inline-block;
+    margin-top: 5px;
+    padding: 5px 10px;
+    background-color: var(--bg-primary);
+    border: 1px solid var(--border-secondary);
+    font-family: monospace;
+    font-size: 0.85rem;
+}
+
 @media (max-width: 768px) {
     h1 {
         font-size: 2rem;
@@ -519,7 +605,12 @@ main {
     }
 
     .primary-btn,
-    .secondary-btn {
+    .secondary-btn,
+    .tertiary-btn {
         width: 100%;
+    }
+
+    .obs-actions {
+        flex-direction: column;
     }
 }

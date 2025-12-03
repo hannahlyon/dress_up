@@ -27,10 +27,16 @@ ALLOWED_ORIGINS = [
     'http://127.0.0.1:8000'
 ]
 
-CORS(app, origins=ALLOWED_ORIGINS)
+CORS(app, origins=ALLOWED_ORIGINS, resources={
+    r"/obs/*": {"origins": "*"},
+    r"/send-outfit": {"origins": ALLOWED_ORIGINS}
+})
 
 # Rate limiting storage (IP -> list of timestamps)
 rate_limit_storage = defaultdict(list)
+
+# OBS outfit storage (simple in-memory storage)
+obs_outfit_data = {'outfit': None}
 
 # Security configuration
 MAX_REQUESTS_PER_HOUR = 10  # Max 10 emails per hour per IP
@@ -180,5 +186,56 @@ def health():
     """Health check endpoint"""
     return jsonify({'status': 'ok'})
 
+@app.route('/obs/outfit', methods=['POST', 'OPTIONS'])
+def save_obs_outfit():
+    """Save outfit data for OBS overlay"""
+    # Handle preflight request
+    if request.method == 'OPTIONS':
+        response = jsonify({'success': True})
+        response.headers.add('Access-Control-Allow-Origin', '*')
+        response.headers.add('Access-Control-Allow-Headers', 'Content-Type')
+        response.headers.add('Access-Control-Allow-Methods', 'POST, GET, DELETE, OPTIONS')
+        return response
+
+    try:
+        data = request.json
+        outfit = data.get('outfit')
+
+        if outfit is None:
+            return jsonify({'success': False, 'error': 'No outfit data provided'}), 400
+
+        # Store the outfit
+        obs_outfit_data['outfit'] = outfit
+        print(f"Outfit saved: {outfit}")
+
+        return jsonify({'success': True, 'message': 'Outfit saved for OBS'})
+
+    except Exception as e:
+        print(f"Error saving OBS outfit: {str(e)}")
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+@app.route('/obs/outfit', methods=['GET'])
+def get_obs_outfit():
+    """Get outfit data for OBS overlay"""
+    try:
+        response = jsonify({'success': True, 'outfit': obs_outfit_data['outfit']})
+        response.headers.add('Access-Control-Allow-Origin', '*')
+        return response
+    except Exception as e:
+        print(f"Error getting OBS outfit: {str(e)}")
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+@app.route('/obs/outfit', methods=['DELETE'])
+def clear_obs_outfit():
+    """Clear outfit data for OBS overlay"""
+    try:
+        obs_outfit_data['outfit'] = None
+        print("OBS outfit cleared")
+        return jsonify({'success': True, 'message': 'OBS outfit cleared'})
+
+    except Exception as e:
+        print(f"Error clearing OBS outfit: {str(e)}")
+        return jsonify({'success': False, 'error': str(e)}), 500
+
 if __name__ == '__main__':
-    app.run(port=5000, debug=True)
+    app.run(host='0.0.0.0', port=5001, debug=True)

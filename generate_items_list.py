@@ -10,7 +10,7 @@ import json
 def generate_items_list():
     """Generate items list for all clothing categories."""
     clothes_dir = 'clothes'
-    categories = ['tops', 'outwear', 'dresses', 'bottoms', 'shoes', 'bags', 'accessories']
+    categories = ['tops', 'outwear', 'dresses', 'bottoms', 'shoes', 'bags', 'accessories', 'molly']
 
     items_data = {}
 

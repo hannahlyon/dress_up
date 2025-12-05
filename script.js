@@ -243,8 +243,8 @@ function createItemCard(category, itemFilename) {
   const itemCard = document.createElement("div");
   itemCard.className = "item-card";
 
-  // Check if item is selected (handle both string and array for accessories)
-  if (category === "accessories" && Array.isArray(state.selectedItems[category])) {
+  // Check if item is selected (handle both string and array for accessories and molly)
+  if ((category === "accessories" || category === "molly") && Array.isArray(state.selectedItems[category])) {
     if (state.selectedItems[category].includes(itemFilename)) {
       itemCard.classList.add("selected");
     }
@@ -269,8 +269,8 @@ function createItemCard(category, itemFilename) {
 
 // Select an item
 function selectItem(category, itemFilename) {
-  // Handle accessories differently - allow multiple selections
-  if (category === "accessories") {
+  // Handle accessories and molly differently - allow multiple selections
+  if (category === "accessories" || category === "molly") {
     // Initialize as array if it doesn't exist
     if (!state.selectedItems[category]) {
       state.selectedItems[category] = [];
@@ -346,9 +346,9 @@ function updateOutfitPreview() {
     outfitPreview.appendChild(emptyState);
   } else {
     Object.entries(state.selectedItems).forEach(([category, itemData]) => {
-      // Handle accessories as array, other categories as single item
-      if (category === "accessories" && Array.isArray(itemData)) {
-        // Display each accessory separately
+      // Handle accessories and molly as array, other categories as single item
+      if ((category === "accessories" || category === "molly") && Array.isArray(itemData)) {
+        // Display each item separately
         itemData.forEach((itemFilename) => {
           const outfitItem = document.createElement("div");
           outfitItem.className = "outfit-item";
@@ -422,14 +422,14 @@ async function randomizeOutfit() {
     const items = await loadCategoryItems(category);
 
     if (items.length > 0) {
-      // For accessories, select 1-2 random items
-      if (category === "accessories") {
-        const numAccessories = Math.min(Math.floor(Math.random() * 2) + 1, items.length);
+      // For accessories and molly, select 1-2 random items
+      if (category === "accessories" || category === "molly") {
+        const numItems = Math.min(Math.floor(Math.random() * 2) + 1, items.length);
         const shuffledItems = [...items].sort(() => Math.random() - 0.5);
-        const selectedAccessories = shuffledItems.slice(0, numAccessories);
+        const selectedItems = shuffledItems.slice(0, numItems);
 
         // Set as array
-        state.selectedItems[category] = selectedAccessories;
+        state.selectedItems[category] = selectedItems;
 
         // Update UI to show selections
         const categorySection = document.querySelector(
@@ -439,7 +439,7 @@ async function randomizeOutfit() {
           const itemCards = categorySection.querySelectorAll(".item-card");
           itemCards.forEach((card) => {
             const img = card.querySelector(".item-image");
-            if (selectedAccessories.some(item => img.src.endsWith(item))) {
+            if (selectedItems.some(item => img.src.endsWith(item))) {
               card.classList.add("selected");
             }
           });
